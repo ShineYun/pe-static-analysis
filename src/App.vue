@@ -1,16 +1,23 @@
 <template>
   <HeaderBar/>
-  <div id="sidebar">
-    <SideBar/>
+  <div id="display">
+    <div id="sidebar">
+      <SideBar/>
+    </div>
+    <div id="router-view">
+      <index></index>
+    </div>
   </div>
 </template>
 
 <script>
 import HeaderBar from "@/components/HeaderBar";
 import SideBar from "@/components/SideBar";
+import Index from "@/components/Index";
 export default {
   name: 'App',
   components: {
+    Index,
     HeaderBar,
     SideBar
   }
@@ -18,6 +25,8 @@ export default {
 </script>
 
 <style lang="less">
+
+
 ::-webkit-scrollbar-thumb
 {
   background-color: #cdcdcd;
@@ -47,11 +56,29 @@ export default {
   height: 100vh;
   overflow: hidden;
 }
+#display{
+  position: relative;
+  height: calc(100vh - 60px);
+}
 #sidebar{
   width: 200px;
-  height: calc(100vh - 60px);
+  height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
+  position: absolute;
+  left: 0;
+}
+#router-view{
+  position: absolute;
+  left: 200px;
+  right: 20px;
+  top:20px;
+  bottom: 20px;
+  width: auto;
+  height: calc(100vh - 80px);
+  margin: auto;
+  border: solid;
+
 }
 
 </style>
