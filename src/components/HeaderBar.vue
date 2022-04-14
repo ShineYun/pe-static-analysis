@@ -22,10 +22,9 @@ export default {
 
 #header-title{
   height: 60px;
-  margin: auto;
-  justify-content: center;
+  display: flex;
+  margin-left: 20px;
   align-items: center;
-  text-align: center;
   line-height: 60px;
   font-size: 30px;
   font-weight: bolder;

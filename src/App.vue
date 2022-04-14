@@ -4,7 +4,7 @@
     <div id="sidebar">
       <SideBar/>
     </div>
-    <div id="router-view">
+    <div id="info-view">
       <index></index>
     </div>
   </div>
@@ -20,7 +20,7 @@ export default {
     Index,
     HeaderBar,
     SideBar
-  }
+  },
 }
 </script>
 
@@ -68,7 +68,7 @@ export default {
   position: absolute;
   left: 0;
 }
-#router-view{
+#info-view{
   position: absolute;
   left: 200px;
   right: 20px;
@@ -78,7 +78,9 @@ export default {
   height: calc(100vh - 80px);
   margin: auto;
   border: solid;
-
+  border-radius: 5px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 </style>
