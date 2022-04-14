@@ -17,7 +17,8 @@ export default {
   display: flex;
   justify-content: center;
   align-content: center;
-  margin: 5px;
+  padding: 5px;
+  border-bottom: black solid;
 }
 .button-item{
   background: #ecf5ff;

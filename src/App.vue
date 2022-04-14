@@ -70,16 +70,16 @@ export default {
 }
 #info-view{
   position: absolute;
-  left: 200px;
+  left: 220px;
   right: 20px;
   top:20px;
-  bottom: 20px;
-  width: auto;
-  height: calc(100vh - 80px);
-  margin: auto;
+  bottom: 200px;
+  //width: auto;
+  height: calc(100vh - 100px);
+  //margin: auto;
   border: solid;
   border-radius: 5px;
-  overflow-y: scroll;
+  //overflow-y: scroll;
   overflow-x: hidden;
 }
 
