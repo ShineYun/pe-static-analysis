@@ -5,7 +5,7 @@
       <SideBar/>
     </div>
     <div id="info-view">
-      <index></index>
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -13,11 +13,9 @@
 <script>
 import HeaderBar from "@/components/HeaderBar";
 import SideBar from "@/components/SideBar";
-import Index from "@/components/Index";
 export default {
   name: 'App',
   components: {
-    Index,
     HeaderBar,
     SideBar
   },
@@ -81,6 +79,8 @@ export default {
   border-radius: 5px;
   //overflow-y: scroll;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 </style>

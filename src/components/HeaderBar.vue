@@ -1,8 +1,10 @@
 <template>
   <div id="header-1-level">
-    <div id="header-title">
-      PE文件逆向仿真系统
-    </div>
+    <router-link to="/">
+      <div id="header-title">
+        PE文件逆向仿真系统
+      </div>
+    </router-link>
   </div>
 </template>
 
