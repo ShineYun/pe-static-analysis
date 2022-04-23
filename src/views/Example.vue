@@ -16,6 +16,17 @@
 
 <script>
 export default {
+  data() {
+    return {
+      eid: -1,
+    }
+  },
+  created() {
+    this.eid = window.location.href.split('/example/')[1];
+    this.$axios.get(`http:localhost:3000/getExample?eid=${this.eid}`).then(res => {
+
+    })
+  }
 }
 </script>
 

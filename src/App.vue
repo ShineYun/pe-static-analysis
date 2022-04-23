@@ -23,7 +23,9 @@ export default {
 </script>
 
 <style lang="less">
-
+a {
+  text-decoration:none
+}
 
 ::-webkit-scrollbar-thumb
 {

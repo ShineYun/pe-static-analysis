@@ -14,10 +14,11 @@ const routes = [
         component: Doc,
     },
     {
-        path: "/example",
+        path: "/example/:eid",
         name: "Example",
         component: Example,
-    }
+    },
+
 ];
 
 const router = createRouter({

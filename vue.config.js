@@ -8,5 +8,19 @@ module.exports = defineConfig({
       preProcessor: "less",
       patterns: [path.resolve(__dirname, "src/global.less")]
     }
+  },
+  configureWebpack: {
+    module: {
+      rules: [
+        // 配置读取 *.md 文件的规则
+        {
+          test: /\.md$/,
+          use: [
+            { loader: "html-loader" },
+            { loader: "markdown-loader", options: {} }
+          ]
+        }
+      ]
+    }
   }
 })
