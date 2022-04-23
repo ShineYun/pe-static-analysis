@@ -1,13 +1,13 @@
 <template>
-  <h1>文档显示界面</h1>
+  <v-md-preview :text="text"></v-md-preview>
 </template>
 
 <script>
 export default {
-  name: "Doc"
-}
+  data() {
+    return {
+      text: '# 标题 auhuiqwheioqhweiqh',
+    };
+  },
+};
 </script>
-
-<style scoped>
-
-</style>
