@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>测试</div>
-    <div v-html="articalContent"></div>
+    <div class="markdown-body" v-html="articalContent"></div>
   </div>
 </template>
 <script>
