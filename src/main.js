@@ -19,7 +19,7 @@ VMdPreview.use(githubTheme, {
 
 const app = createApp(App)
 
-axios.defaults.baseURL = '/api'
+// axios.defaults.baseURL = '/api'
 app.config.globalProperties.$axios = axios;
 app.config.globalProperties.$marked = marked;
 

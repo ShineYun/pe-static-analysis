@@ -30,7 +30,7 @@ export default {
   },
   created() {
     this.eid = window.location.href.split('/example/')[1];
-    this.$axios.get(`/getExample?eid=${this.eid}`).then(res => {
+    this.$axios.get(`/api/getExample?eid=${this.eid}`).then(res => {
       console.log(res.data);
     })
   },
