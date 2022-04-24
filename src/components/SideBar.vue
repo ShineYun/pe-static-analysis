@@ -63,11 +63,11 @@ export default {
           item:[
             {
               name:'样例2-1',
-              route:'/example/1',
+              route:'/example/3',
             },
             {
               name:'样例2-2',
-              route:'/example/1',
+              route:'/example/4',
             },
           ]
         },
@@ -77,11 +77,11 @@ export default {
           item:[
             {
               name:'样例3-1',
-              route:'/example/1',
+              route:'/example/5',
             },
             {
               name:'样例3-2',
-              route:'/example/1',
+              route:'/example/6',
             },
           ]
         }

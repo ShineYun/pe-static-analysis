@@ -2,13 +2,20 @@
   <div id="button-group">
     <div class="button-item">程序下载</div>
     <div class="button-item">文档下载</div>
-    <div class="button-item">撤回动画</div>
-    <div class="button-item">重置动画</div>
   </div>
   <div class="block">
     <el-carousel id="example-carousel" trigger="click" height="100%" :autoplay=false :loop=false>
       <el-carousel-item v-for="item in 4" :key="item">
         <h3 class="small">{{ item }}</h3>
+        <el-row class="mb-4">
+          <el-button>Default</el-button>
+          <el-button type="primary">Primary</el-button>
+          <el-button type="success">Success</el-button>
+          <el-button type="info">Info</el-button>
+          <el-button type="warning">Warning</el-button>
+          <el-button type="danger">Danger</el-button>
+          <el-button>中文</el-button>
+        </el-row>
       </el-carousel-item>
     </el-carousel>
   </div>
@@ -23,10 +30,19 @@ export default {
   },
   created() {
     this.eid = window.location.href.split('/example/')[1];
-    this.$axios.get(`/api/getExample?eid=${this.eid}`).then(res => {
+    this.$axios.get(`/getExample?eid=${this.eid}`).then(res => {
       console.log(res.data);
     })
-  }
+  },
+  // watch: {
+  //   $route (to, from) {
+  //     if (to.params.eid != from.params.eid) {
+  //       // this.init();
+  //       // console.log('flash!!!')
+  //       this.$router.go(0)
+  //     }
+  //   }
+  // },
 }
 </script>
 
