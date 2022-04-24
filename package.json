@@ -19,6 +19,7 @@
     "marked": "^4.0.14",
     "prismjs": "^1.27.0",
     "vue": "^3.2.13",
+    "vue-doc-preview": "^0.3.2",
     "vue-router": "^4.0.14",
     "vue3-markdown-it": "^1.0.10"
   },

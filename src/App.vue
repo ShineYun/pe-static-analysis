@@ -70,14 +70,10 @@ a {
 }
 #info-view{
   position: absolute;
-  left: 220px;
-  right: 20px;
-  top:20px;
-  bottom: 200px;
-  //width: auto;
-  height: calc(100vh - 100px);
+  left: 200px;
+  width: calc(100vw - 200px);
+  height: calc(100vh - 60px);
   //margin: auto;
-  border: solid;
   border-radius: 5px;
   //overflow-y: scroll;
   overflow-x: hidden;

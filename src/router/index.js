@@ -9,7 +9,7 @@ const routes = [
         component: Index,
     },
     {
-        path: "/doc",
+        path: "/doc/:did",
         name: "Doc",
         component: Doc,
     },
