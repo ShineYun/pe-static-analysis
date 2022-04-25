@@ -4,7 +4,7 @@
     <div id="sidebar">
       <SideBar/>
     </div>
-    <div id="info-view">
+    <div id="info-view" >
       <router-view :key="$route.fullPath"></router-view>
     </div>
   </div>

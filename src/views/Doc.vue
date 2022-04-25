@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div>测试</div>
     <div class="markdown-body" v-html="articalContent"></div>
   </div>
 </template>
@@ -35,3 +34,14 @@ export default {
   }
 };
 </script>
+
+<style lang="less">
+.markdown-body{
+  h1{
+    display: flex;
+  }
+  pre{
+    display: flex;
+  }
+}
+</style>

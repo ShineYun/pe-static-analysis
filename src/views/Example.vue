@@ -2,7 +2,25 @@
   <div id="button-group">
     <div class="button-item">程序下载</div>
     <div class="button-item">文档下载</div>
+    <div class="button-item" @click="dialogVisible = true">静态信息</div>
   </div>
+  <div class="all-dialog" >
+      <el-dialog v-model="dialogVisible"
+                 title="静态信息" width="40%"
+                 :modal="false"
+                 draggable
+                 :close-on-click-modal="false"
+                 :append-to-body="true"
+                 custom-class="myDialog"
+                 @opened="onDialogOpen"
+      >
+        <h1>静态信息</h1>
+
+
+      </el-dialog>
+  </div>
+
+
   <div class="block">
     <el-carousel id="example-carousel" trigger="click" height="100%" :autoplay=false :loop=false>
       <el-carousel-item v-for="item in 4" :key="item">
@@ -26,6 +44,7 @@ export default {
   data() {
     return {
       eid: -1,
+      dialogVisible : false,
     }
   },
   created() {
@@ -34,19 +53,23 @@ export default {
       console.log(res.data);
     })
   },
-  // watch: {
-  //   $route (to, from) {
-  //     if (to.params.eid != from.params.eid) {
-  //       // this.init();
-  //       // console.log('flash!!!')
-  //       this.$router.go(0)
-  //     }
-  //   }
-  // },
+  mounted() {
+  },
+  setup() {
+    const onDialogOpen = () => {
+      document.getElementsByClassName('myDialog')[0].parentElement.parentElement.style.pointerEvents = 'none';
+      document.getElementsByClassName('myDialog')[0].style.pointerEvents = 'auto';
+    }
+
+    return {
+      onDialogOpen
+    }
+  }
 }
 </script>
 
-<style lang="less">
+<style scoped lang="less">
+
 #button-group{
   display: flex;
   justify-content: center;
