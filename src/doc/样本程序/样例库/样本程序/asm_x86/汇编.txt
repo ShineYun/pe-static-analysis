@@ -1,0 +1,10 @@
+; Attributes: noreturn
+
+; void __stdcall __noreturn Main()
+_Main@0 proc near
+mov     eax, 10000h
+add     eax, 40000h
+sub     eax, 20000h
+push    0               ; uExitCode
+call    _ExitProcess@4  ; ExitProcess(x)
+_Main@0 endp
