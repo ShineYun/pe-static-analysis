@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="markdown-body" v-html="articalContent"></div>
+    <div class="markdown-body" v-html="articalContent" style="text-align: left"></div>
   </div>
 </template>
 <script>
@@ -36,12 +36,43 @@ export default {
 </script>
 
 <style lang="less">
-.markdown-body{
-  h1{
-    display: flex;
+.markdown-body {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 45px;
+}
+
+@media (max-width: 767px) {
+  .markdown-body {
+    padding: 15px;
   }
-  pre{
-    display: flex;
-  }
+}
+pre{
+  display: block;
+  background-color:#f3f3f3;
+  padding: .5rem !important;
+  overflow-y: auto;
+  font-weight: 300;
+  border-radius: .3rem;
+  background-color: #283646 !important;
+}
+pre >code{
+  border:0px !important;
+  background-color: #283646 !important;
+  color:#FFF;
+
+}
+code {
+  display: inline-block ;
+  background-color:#f3f3f3;
+  border:1px solid #fdb9cc;
+  border-radius:3px;
+  font-size: 12px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color:#4f4f4f;
+  margin: 0px 3px;
 }
 </style>
