@@ -4,34 +4,65 @@
   </div>
 </template>
 <script>
+import { ref, getCurrentInstance } from "vue";
+
 export default {
   data() {
     return {
-      articalContent: ""
+      // articalContent: ""
     };
   },
   components: {
     // marked
   },
-  created() {
-    let data;
-    let self = this;
-    this.did = window.location.href.split('/doc/')[1];
-    this.$axios.get(`/api/getDocument?did=${this.did}`).then(res => {
-      console.log(res.data);
-      data = res.data;
-      console.log('doc_url:',data.doc_url);
-      getMd(data.doc_url);
-    })
-    function getMd(doc_url){
-      self.$axios.get(doc_url).then(res => {
-        const htmlMD = self.$marked(res.data);
+  setup(){
+    //proxy代理 类似this
+    const { proxy } = getCurrentInstance();
+    const articalContent = ref()
+    function getDoc(){
+      const data = ref();
+      proxy.did = window.location.href.split('/doc/')[1];
+      proxy.$axios.get(`/api/getDocument?did=${proxy.did}`).then(res => {
+        console.log(res.data);
+        data.value = res.data;
+        console.log('doc_url:',data.value.doc_url);
+        getMd(data.value.doc_url,proxy);
+      })
+    };
+    //获取文档的写法
+
+    function getMd(url){
+      proxy.$axios.get(url).then(res => {
+        const htmlMD = proxy.$marked(res.data);
         console.log(typeof res.data);
         console.log(htmlMD);
-        self.articalContent = htmlMD;
-      });
+        articalContent.value = htmlMD;
+      })
     }
-  }
+    getDoc();
+    return {
+      articalContent,
+    };
+  },
+  // created() {
+  //   let data;
+  //   let self = this;
+  //   this.did = window.location.href.split('/doc/')[1];
+  //   this.$axios.get(`/api/getDocument?did=${this.did}`).then(res => {
+  //     console.log(res.data);
+  //     data = res.data;
+  //     console.log('doc_url:',data.doc_url);
+  //     getMd(data.doc_url);
+  //   })
+  //   function getMd(doc_url){
+  //     self.$axios.get(doc_url).then(res => {
+  //       const htmlMD = self.$marked(res.data);
+  //       console.log(typeof res.data);
+  //       console.log(htmlMD);
+  //       self.articalContent = htmlMD;
+  //     });
+  //   }
+  // }
 };
 </script>
 

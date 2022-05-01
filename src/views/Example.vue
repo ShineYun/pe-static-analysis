@@ -37,12 +37,20 @@
   <div class="block">
     <el-carousel id="example-carousel" trigger="click" height="100%" :autoplay=false :loop=false>
       <el-carousel-item >
-        <div id="page-one-left">
+        <div id="page-one-left" style="border-right: solid ;margin-right: 5px">
           <div id="page-one-left-top">
-            <div>程序运行如下：</div>
+            <h3 style="border-bottom: solid">程序运行显示界面</h3>
+            <div class="demo-image__error">
+
+              <div class="block">
+                <el-image src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" fit="fill" />
+              </div>
+              </div>
+
           </div>
           <div id="page-one-left-down">
-            <div>程序结果如下：</div>
+            <h3 style="border-bottom: solid">程序运行结果界面</h3>
+
           </div>
         </div>
         <div id="page-one-right">
@@ -54,10 +62,30 @@
         <div id="page-two-left">
           <h1>16进制信息如下</h1>
         </div>
-        <div id="page-two-right">汇编or反汇编结果</div>
+        <div id="page-two-right">
+          <div style="margin-top: 5px;">
+            <el-radio-group v-model="radio" >
+              <el-radio-button label="汇 编" />
+              <el-radio-button label="反汇编" />
+            </el-radio-group>
+          </div>
+        </div>
       </el-carousel-item>
+
       <el-carousel-item >
-        <h1 class="small">这是步骤：3</h1>
+        <div id="page-three-left">
+          <div id="page-three-left-top">
+            PE基本信息表
+
+          </div>
+          <div id="page-three-left-down">
+            正确信息显示
+          </div>
+        </div>
+      </el-carousel-item>
+
+      <el-carousel-item >
+        <h1 class="small">这是步骤：4</h1>
       </el-carousel-item>
 
     </el-carousel>
@@ -66,29 +94,46 @@
 
 <script>
 
+import {getCurrentInstance, ref} from 'vue'
+
 export default {
   data() {
     return {
-      eid: -1,
-      dialogVisible : false,
       program_url:'http://www.baidu.com',
+      a: null
     }
   },
-  directives: {
-    // dialogDrag
-  },
-  created() {
-    this.eid = window.location.href.split('/example/')[1];
-    this.$axios.get(`/api/getExample?eid=${this.eid}`).then(res => {
-      console.log(res.data);
-      data = res.data;
-      console.log('doc_url:',data.doc_url);
-      getMd(data.doc_url);
-    })
-  },
-  mounted() {
-  },
+  // created() {
+  //   this.eid = window.location.href.split('/example/')[1];
+  //   this.$axios.get(`/api/getExample?eid=${this.eid}`).then(res => {
+  //     console.log(res.data);
+  //     data = res.data;
+  //     console.log('doc_url:',data.doc_url);
+  //     getMd(data.doc_url);
+  //   })
+  // },
   setup() {
+    const radio = ref('汇 编')
+    const { proxy } = getCurrentInstance();
+    const dialogVisible = ref(false);
+    function getExample(){
+      proxy.eid = window.location.href.split('/example/')[1];
+      proxy.$axios.get(`/api/getExample?eid=${proxy.eid}`).then(res => {
+        console.log(res.data);
+        // data = res.data;
+        // console.log('doc_url:',data.doc_url);
+        // getMd(data.doc_url);
+      })
+    }
+    getExample()
+    function getMd(url){
+      proxy.$axios.get(url).then(res => {
+        const htmlMD = proxy.$marked(res.data);
+        console.log(typeof res.data);
+        console.log(htmlMD);
+        // articalContent.value = htmlMD;
+      })
+    }
     const onDialogOpen = () => {
       document.getElementsByClassName('myDialog')[0].parentElement.parentElement.style.pointerEvents = 'none';
       document.getElementsByClassName('myDialog')[0].style.pointerEvents = 'auto';
@@ -96,7 +141,9 @@ export default {
     }
 
     return {
-      onDialogOpen
+      onDialogOpen,
+      radio,
+      dialogVisible,
     }
   }
 }
@@ -127,30 +174,28 @@ export default {
 #page-one-left{
   width: 50%;
   height: 100%;
-  overflow-y: scroll;
-  overflow-x: hidden;
   position: absolute;
+  border-left: solid;
   left: 0;
   background: #ffffff;
   &{
     margin: 0;
   }
+  & :deep(h3) {
+    line-height: 15px !important;
+    //深度选择器，覆盖组件样式
+  }
   #page-one-left-top{
     height: 50%;
-    overflow-y: scroll;
-    h1{
-      margin: 0 !important;
-    }
+    border-bottom: solid;
   }
   #page-one-left-down{
     height: 50%;
-    overflow-y: scroll;
-    background: #0055aa;
+    background: #ffffff;
     h1{
       margin: 0 !important;
     }
   }
-
 }
 
 #page-one-right{
@@ -159,8 +204,10 @@ export default {
   overflow-y: scroll;
   overflow-x: hidden;
   position: absolute;
+  border-left: solid;
+  border-bottom: solid;
   right: 0;
-  background: #d3dce6;
+  background: #FFFFFF;
   ::-webkit-scrollbar {
     /*隐藏滚轮*/
     display: none;
@@ -187,9 +234,33 @@ export default {
   background: #FFFFFF;
 }
 
-
-
-
+#page-three-left{
+  width: 50%;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  position: absolute;
+  left: 0;
+  background: #ffffff;
+  &{
+    margin: 0;
+  }
+  #page-three-left-top{
+    height: 50%;
+    overflow-y: scroll;
+    h1{
+      margin: 0 !important;
+    }
+  }
+  #page-three-left-down{
+    height: 50%;
+    overflow-y: scroll;
+    background: #0055aa;
+    h1{
+      margin: 0 !important;
+    }
+  }
+}
 
 .button-item{
   background: #ecf5ff;
@@ -233,7 +304,41 @@ export default {
   height: 100%;
 }
 
+.demo-image__error .block {
+  padding: 30px 0;
+  text-align: center;
+  display: inline-block;
+  width: 80%;
+  box-sizing: border-box;
+  vertical-align: top;
+}
+.demo-image__error .demonstration {
+  display: block;
+  color: var(--el-text-color-secondary);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.demo-image__error .el-image {
+  padding: 0 5px;
+  max-width: 300px;
+  max-height: 100%;
+  width: 100%;
+  height: 200px;
+}
 
+.demo-image__error .image-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--el-fill-color-light);
+  color: var(--el-text-color-secondary);
+  font-size: 30px;
+}
+.demo-image__error .image-slot .el-icon {
+  font-size: 30px;
+}
 
 
 </style>
