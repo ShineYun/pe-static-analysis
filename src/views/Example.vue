@@ -3,8 +3,13 @@
     <a :href="program_url">
       <div class="button-item">程序下载</div>
     </a>
-    <div class="button-item">文档下载</div>
-    <div class="button-item" @click="dialogVisible = true">静态信息</div>
+
+    <a :href="doc_url">
+      <div class="button-item">文档下载</div>
+    </a>
+    <a href="#">
+      <div class="button-item" @click="dialogVisible = true">静态信息</div>
+    </a>
   </div>
   <div class="all-dialog" >
       <el-dialog v-model="dialogVisible"
@@ -37,39 +42,35 @@
   <div class="block">
     <el-carousel id="example-carousel" trigger="click" height="100%" :autoplay=false :loop=false>
       <el-carousel-item >
-        <div id="page-one-left" style="border-right: solid ;margin-right: 5px">
-          <div id="page-one-left-top">
-            <h3 style="border-bottom: solid">程序运行显示界面</h3>
-            <div class="demo-image__error">
-
-              <div class="block">
-                <el-image src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" fit="fill" />
-              </div>
-              </div>
-
-          </div>
-          <div id="page-one-left-down">
-            <h3 style="border-bottom: solid">程序运行结果界面</h3>
-
+        <div id="page-one-left" style="border-right: solid ;">
+          <div class="img-info-card" v-for="item of imgList" :key="index">
+            <div class="img-info-card-title">{{ item.title }}</div>
+            <el-image class="img-info-card-img" :src="item.src" :fit="contain" />
           </div>
         </div>
         <div id="page-one-right">
-          <div>test介绍文档</div>
-<!--          <div class="markdown-body" v-html="articalContent" style="text-align: left">测试</div>-->
+          <div class="markdown-body" v-html="firstContent" style="text-align: left"></div>
         </div>
       </el-carousel-item>
       <el-carousel-item>
         <div id="page-two-left">
-          <h1>16进制信息如下</h1>
-        </div>
-        <div id="page-two-right">
-          <div style="margin-top: 5px;">
-            <el-radio-group v-model="radio" >
-              <el-radio-button label="汇 编" />
-              <el-radio-button label="反汇编" />
-            </el-radio-group>
+          <h2 style="border-bottom: solid; background: #FFFFFF" >16进制信息如下</h2>
+          <div class="content">
+            <div class="markdown-body" v-html="secondContent" style="text-align: left;overflow-y: scroll;"></div>
           </div>
         </div>
+        <div id="page-two-right">
+          <div style="padding: 5px 5px; border-bottom:solid;">
+            <el-radio-group v-model="radio" >
+              <el-radio-button id="asm-button" label="asm">汇 编</el-radio-button>
+              <el-radio-button id="reverse-asm-button" label="reverse_asm" >反汇编</el-radio-button>
+            </el-radio-group>
+          </div>
+            <div class="content">
+              <div class="markdown-body" v-if="radio === 'asm'" v-html="asmContent" style="text-align: left;overflow-y: scroll;"></div>
+              <div class="markdown-body" v-if="radio === 'reverse_asm'" v-html="reverseAsmContent" style="text-align: left;overflow-y: scroll;"></div>
+            </div>
+          </div>
       </el-carousel-item>
 
       <el-carousel-item >
@@ -94,56 +95,62 @@
 
 <script>
 
-import {getCurrentInstance, ref} from 'vue'
+import {getCurrentInstance, onMounted, ref} from 'vue'
 
 export default {
   data() {
     return {
       program_url:'http://www.baidu.com',
-      a: null
+      doc_url:'https://markdown-1306010242.cos.ap-chongqing.myqcloud.com/pe.md',
     }
   },
-  // created() {
-  //   this.eid = window.location.href.split('/example/')[1];
-  //   this.$axios.get(`/api/getExample?eid=${this.eid}`).then(res => {
-  //     console.log(res.data);
-  //     data = res.data;
-  //     console.log('doc_url:',data.doc_url);
-  //     getMd(data.doc_url);
-  //   })
-  // },
   setup() {
-    const radio = ref('汇 编')
+    const radio = ref('asm')
     const { proxy } = getCurrentInstance();
     const dialogVisible = ref(false);
+    const imgList = ref();
+    const firstContent = ref();
+    const secondContent = ref();
+    const asmContent = ref();
+    const reverseAsmContent = ref();
     function getExample(){
       proxy.eid = window.location.href.split('/example/')[1];
-      proxy.$axios.get(`/api/getExample?eid=${proxy.eid}`).then(res => {
+      proxy.$axios.get(`/api/getExample?eid=${proxy.eid}`).then(async res => {
+        const data = res.data;
         console.log(res.data);
-        // data = res.data;
+        imgList.value = data.introduction.imgList;
         // console.log('doc_url:',data.doc_url);
-        // getMd(data.doc_url);
+        firstContent.value = await getMd(data.introduction.markdown);
+        secondContent.value = await getMd(data.hexData);
+        asmContent.value = await getMd(data.asmData);
+        reverseAsmContent.value = await getMd(data.reverseAsmData);
       })
     }
+    async function getMd(url){
+      return await proxy.$axios.get(url).then(async res => {
+        const htmlMD = await proxy.$marked(res.data);
+        // async await实现异步等待
+        return htmlMD;
+      })
+    }
+
     getExample()
-    function getMd(url){
-      proxy.$axios.get(url).then(res => {
-        const htmlMD = proxy.$marked(res.data);
-        console.log(typeof res.data);
-        console.log(htmlMD);
-        // articalContent.value = htmlMD;
-      })
-    }
     const onDialogOpen = () => {
       document.getElementsByClassName('myDialog')[0].parentElement.parentElement.style.pointerEvents = 'none';
       document.getElementsByClassName('myDialog')[0].style.pointerEvents = 'auto';
       // document.getElementsByClassName('myDialog')[0].style.
     }
 
+
     return {
       onDialogOpen,
       radio,
       dialogVisible,
+      imgList,
+      firstContent,
+      secondContent,
+      asmContent,
+      reverseAsmContent
     }
   }
 }
@@ -169,7 +176,12 @@ export default {
   height: 35px;
 }
 
-
+.content{
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%;
+  width: 100%;
+}
 
 #page-one-left{
   width: 50%;
@@ -178,6 +190,7 @@ export default {
   border-left: solid;
   left: 0;
   background: #ffffff;
+  overflow-y: auto;
   &{
     margin: 0;
   }
@@ -185,17 +198,14 @@ export default {
     line-height: 15px !important;
     //深度选择器，覆盖组件样式
   }
-  #page-one-left-top{
-    height: 50%;
-    border-bottom: solid;
-  }
-  #page-one-left-down{
-    height: 50%;
-    background: #ffffff;
-    h1{
-      margin: 0 !important;
-    }
-  }
+}
+
+.img-info-card:not(:first-child) {
+  //margin-top: 20px;
+}
+
+.img-info-card-title {
+  font-size: 28px;
 }
 
 #page-one-right{
@@ -217,19 +227,29 @@ export default {
 #page-two-left{
   width: 50%;
   height: 100%;
-  overflow-y: scroll;
-  overflow-x: hidden;
   position: absolute;
+  //overflow-y: scroll;
+  //overflow-x: hidden;
+  border-left: solid;
   left: 0;
   background: #d3dce6;
+  & :deep(h3) {
+    line-height: 15px !important;
+    //深度选择器，覆盖组件样式
+  }
+  & :deep(h2){
+    padding: 5px 5px !important;
+    margin: 0 !important;
+  }
 }
 
 #page-two-right{
   width: 50%;
   height: 100%;
-  overflow-y: scroll;
-  overflow-x: hidden;
   position: absolute;
+  //overflow-y: scroll;
+  //overflow-x: hidden;
+  border-left: solid;
   right: 0;
   background: #FFFFFF;
 }
@@ -304,41 +324,6 @@ export default {
   height: 100%;
 }
 
-.demo-image__error .block {
-  padding: 30px 0;
-  text-align: center;
-  display: inline-block;
-  width: 80%;
-  box-sizing: border-box;
-  vertical-align: top;
-}
-.demo-image__error .demonstration {
-  display: block;
-  color: var(--el-text-color-secondary);
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-.demo-image__error .el-image {
-  padding: 0 5px;
-  max-width: 300px;
-  max-height: 100%;
-  width: 100%;
-  height: 200px;
-}
-
-.demo-image__error .image-slot {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  background: var(--el-fill-color-light);
-  color: var(--el-text-color-secondary);
-  font-size: 30px;
-}
-.demo-image__error .image-slot .el-icon {
-  font-size: 30px;
-}
 
 
 </style>

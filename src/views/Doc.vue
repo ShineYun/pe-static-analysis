@@ -7,11 +7,6 @@
 import { ref, getCurrentInstance } from "vue";
 
 export default {
-  data() {
-    return {
-      // articalContent: ""
-    };
-  },
   components: {
     // marked
   },
@@ -26,7 +21,7 @@ export default {
         console.log(res.data);
         data.value = res.data;
         console.log('doc_url:',data.value.doc_url);
-        getMd(data.value.doc_url,proxy);
+        getMd(data.value.doc_url);
       })
     };
     //获取文档的写法
