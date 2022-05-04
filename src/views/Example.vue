@@ -22,25 +22,22 @@
                  @opened="onDialogOpen"
       >
        <div id="dialog-body">
-         <el-descriptions title="User Info">
-           <el-descriptions-item label="Username">kooriookami</el-descriptions-item>
-           <el-descriptions-item label="Telephone">18100000000</el-descriptions-item>
-           <el-descriptions-item label="Place">Suzhou</el-descriptions-item>
-           <el-descriptions-item label="Remarks">
-             <el-tag size="small">School</el-tag>
-           </el-descriptions-item>
-           <el-descriptions-item label="Address"
-           >No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu
-             Province</el-descriptions-item
-           >
-         </el-descriptions>
+         <iframe :src="peStaticUrl" height="100%" width="100%"/>
        </div>
       </el-dialog>
   </div>
 
 
   <div class="block">
-    <el-carousel id="example-carousel" trigger="click" height="100%" :autoplay=false :loop=false>
+    <el-carousel
+        id="example-carousel"
+        trigger="click"
+        height="100%"
+        :autoplay=false
+        :loop=false
+        v-loading="loading"
+        element-loading-text="Loading..."
+        @change="switchPage">
       <el-carousel-item >
         <div id="page-one-left" style="border-right: solid ;">
           <div class="img-info-card" v-for="item of imgList" :key="index">
@@ -55,7 +52,7 @@
       <el-carousel-item>
         <div id="page-two-left">
           <h2 style="border-bottom: solid; background: #FFFFFF" >16进制信息如下</h2>
-          <div class="content">
+          <div class="content" style="background: #FFFFFF">
             <div class="markdown-body" v-html="secondContent" style="text-align: left;overflow-y: scroll;"></div>
           </div>
         </div>
@@ -113,26 +110,63 @@ export default {
     const secondContent = ref();
     const asmContent = ref();
     const reverseAsmContent = ref();
+    const data = ref();   //请求得到的json数据
+    const loadedPage = [];
+    const peStaticUrl = ref('');
+    const loading = ref(true);
+
+    //触发换页函数
+
+    const switchPage = async (newPage,oldPage)=>{
+      loading.value = true;
+      const index = loadedPage.indexOf(newPage);
+      if(index === -1){
+        if(newPage === 1){
+          secondContent.value =  await getMd(data.value.hexData);
+          asmContent.value =  await getMd(data.value.asmData);
+          reverseAsmContent.value =  await getMd(data.value.reverseAsmData);
+        }
+        else if(newPage === 2){
+        }
+        else if(newPage === 2){
+        }
+        else{
+
+        }
+        loadedPage.push(newPage);
+      }
+      loading.value = false;
+    }
+
+    const onTableRowDblClick = (row, column, event) => {
+      console.log(row.id)
+    }
+
+    const defaultProps = {
+      children: 'children',
+      label: 'label',
+    };
+
     function getExample(){
       proxy.eid = window.location.href.split('/example/')[1];
       proxy.$axios.get(`/api/getExample?eid=${proxy.eid}`).then(async res => {
-        const data = res.data;
+        data.value = res.data;
         console.log(res.data);
-        imgList.value = data.introduction.imgList;
+        imgList.value = data.value.introduction.imgList;
         // console.log('doc_url:',data.doc_url);
-        firstContent.value = await getMd(data.introduction.markdown);
-        secondContent.value = await getMd(data.hexData);
-        asmContent.value = await getMd(data.asmData);
-        reverseAsmContent.value = await getMd(data.reverseAsmData);
+        firstContent.value = await getMd(data.value.introduction.markdown);
+        peStaticUrl.value = data.value.peStaticUrl;
+        loading.value = false;
       })
     }
-    async function getMd(url){
-      return await proxy.$axios.get(url).then(async res => {
-        const htmlMD = await proxy.$marked(res.data);
-        // async await实现异步等待
-        return htmlMD;
+     const getMd = async (url) => {
+      return proxy.$axios.get(url).then(async res => {
+         const htmlMD = await proxy.$marked(res.data);
+         // async await实现异步等待
+         return htmlMD;
       })
     }
+
 
     getExample()
     const onDialogOpen = () => {
@@ -150,7 +184,14 @@ export default {
       firstContent,
       secondContent,
       asmContent,
-      reverseAsmContent
+      reverseAsmContent,
+      defaultProps,
+      // tableData1,
+      onTableRowDblClick,
+      switchPage,
+      data,
+      loading,
+      peStaticUrl,
     }
   }
 }
@@ -163,8 +204,8 @@ export default {
 }
 #dialog-body{
   height: 60vh;
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow-x: scroll;
+  overflow-y: scroll;
 }
 
 #button-group{

@@ -17,77 +17,38 @@
 </template>
 
 <script>
+import {getCurrentInstance, onMounted, ref} from "vue";
+
 export default {
   name: "SideBar",
-  data(){
-    return{
-      categories:[
-        {
-          index:1,
-          title:'入门分析手册',
-          item:[
-            {
-              name:'文档1',
-              url:'发送请求位置',
-              route: '/doc/1',
-            },
-            {
-              name:'文档2',
-              url:'发送请求位置',
-              route: '/doc/2',
-            },
-            {
-              name:'文档3',
-              url:'发送请求位置',
-              route: '/doc/3',
-            },
-          ]
-        },
-        {
-          index:2,
-          title:'逆向基础',
-          item:[
-            {
-              name:'样例1-1',
-              route:'/example/1',
-            },
-            {
-              name:'样例1-2',
-              route:'/example/2',
-            },
-          ]
-        },
-        {
-          index:3,
-          title:'逆向进阶',
-          item:[
-            {
-              name:'样例2-1',
-              route:'/example/3',
-            },
-            {
-              name:'样例2-2',
-              route:'/example/4',
-            },
-          ]
-        },
-        {
-          index:4,
-          title:'实际应用',
-          item:[
-            {
-              name:'样例3-1',
-              route:'/example/5',
-            },
-            {
-              name:'样例3-2',
-              route:'/example/6',
-            },
-          ]
-        }
-      ]
+  setup(){
+    const data=ref();
+    const { proxy } = getCurrentInstance();
+    const categories = ref();
+    async function getSidebar() {
+      await proxy.$axios.get(`/api/sideBar`).then(async res => {
+        data.value = await res.data;
+        categories.value = await Promise.all([
+          {
+            index:'doc',
+            title:'逆向入手文档',
+            item:data.value.doc,
+          },
+          {
+            index:'example',
+            title:'样本',
+            item:data.value.example,
+          }
+        ])
+      })
     }
-  }
+    onMounted(()=>{
+      getSidebar();
+    })
+    return{
+      categories
+    }
+  },
 }
 </script>
 
