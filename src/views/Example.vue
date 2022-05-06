@@ -33,6 +33,7 @@
         id="example-carousel"
         trigger="click"
         height="100%"
+        initial-index="2"
         :autoplay=false
         :loop=false
         v-loading="loading"
@@ -67,24 +68,66 @@
               <div class="markdown-body" v-if="radio === 'asm'" v-html="asmContent" style="text-align: left;overflow-y: scroll;"></div>
               <div class="markdown-body" v-if="radio === 'reverse_asm'" v-html="reverseAsmContent" style="text-align: left;overflow-y: scroll;"></div>
             </div>
-          </div>
+        </div>
       </el-carousel-item>
 
       <el-carousel-item >
         <div id="page-three-left">
           <div id="page-three-left-top">
-            PE基本信息表
+            <h1 style="margin: 5px !important;">壳检测分析</h1>
+            <el-descriptions :column="2" border >
+              <el-descriptions-item
+                  label="Entry Point"
+                  label-align="right"
+                  align="center"
+                  label-class-name="my-label"
+                  class-name="my-content"
+                  width="200px"
+              >kooriookami</el-descriptions-item
+              >
+              <el-descriptions-item label="EP Section" label-align="right" align="center"
+              >18100000000</el-descriptions-item
+              >
+              <el-descriptions-item label="File Offset" label-align="right" align="center"
+              >Suzhou</el-descriptions-item
+              >
+              <el-descriptions-item label="First Bytes" label-align="right" align="center">
+                school
+              </el-descriptions-item>
+              <el-descriptions-item label="Linker Info" label-align="right" align="center"
+              >链接器数据</el-descriptions-item>
+              <el-descriptions-item label="SubSystem" label-align="right" align="center"
+              >链接器数据
+              </el-descriptions-item>
+              <el-descriptions-item label="File Size" label-align="right" align="center"
+              >文件大小</el-descriptions-item>
+              <el-descriptions-item label="Overlay" label-align="right" align="center"
+              >链接器数据</el-descriptions-item>
 
+              <el-descriptions-item label="壳信息" label-align="right" align="center"
+              >无壳</el-descriptions-item>
+            </el-descriptions>
           </div>
           <div id="page-three-left-down">
-            正确信息显示
+            <h2>VirusTotal Result</h2>
+            <el-progress type="circle"
+                         :percentage="100"
+                         :status="virusStatus"
+            />
+            <div v-if="virusStatus==='success'">
+            <p>No security vendors and no sandboxes flagged this file as malicious</p>
+            </div>
+            <div v-else>
+              <p> Sandboxes flagged this file as malicious </p>
+            </div>
           </div>
+        </div>
+
+        <div id="page-three-right">
+          <div class="markdown-body" v-html="packVirusContent" style="text-align: left"></div>
         </div>
       </el-carousel-item>
 
-      <el-carousel-item >
-        <h1 class="small">这是步骤：4</h1>
-      </el-carousel-item>
 
     </el-carousel>
   </div>
@@ -92,7 +135,7 @@
 
 <script>
 
-import {getCurrentInstance, onMounted, ref} from 'vue'
+import {getCurrentInstance, ref} from 'vue'
 
 export default {
   data() {
@@ -114,6 +157,8 @@ export default {
     const loadedPage = [];
     const peStaticUrl = ref('');
     const loading = ref(true);
+    const virusStatus=ref('success');
+    const packVirusContent=ref();
 
     //触发换页函数
 
@@ -127,8 +172,7 @@ export default {
           reverseAsmContent.value =  await getMd(data.value.reverseAsmData);
         }
         else if(newPage === 2){
-        }
-        else if(newPage === 2){
+          packVirusContent.value = await getMd(data.value.packVirusData);
         }
         else{
 
@@ -156,8 +200,11 @@ export default {
         // console.log('doc_url:',data.doc_url);
         firstContent.value = await getMd(data.value.introduction.markdown);
         peStaticUrl.value = data.value.peStaticUrl;
+        //todo delete next line
+        packVirusContent.value = await getMd(data.value.packVirusData);
         loading.value = false;
       })
+
     }
      const getMd = async (url) => {
       return proxy.$axios.get(url).then(async res => {
@@ -192,6 +239,8 @@ export default {
       data,
       loading,
       peStaticUrl,
+      virusStatus,
+      packVirusContent,
     }
   }
 }
@@ -316,11 +365,22 @@ export default {
   #page-three-left-down{
     height: 50%;
     overflow-y: scroll;
-    background: #0055aa;
+    background: #ffffff;
     h1{
       margin: 0 !important;
     }
   }
+}
+
+#page-three-right{
+  width: 50%;
+  height: 100%;
+  position: absolute;
+  //overflow-y: scroll;
+  //overflow-x: hidden;
+  border-left: solid;
+  right: 0;
+  background: #FFFFFF;
 }
 
 .button-item{
