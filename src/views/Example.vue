@@ -33,7 +33,7 @@
         id="example-carousel"
         trigger="click"
         height="100%"
-        initial-index="2"
+        initial-index="0"
         :autoplay=false
         :loop=false
         v-loading="loading"
@@ -128,6 +128,29 @@
         </div>
       </el-carousel-item>
 
+      <el-carousel-item style="background: #FFFFFF">
+        <div id="page-four-left" style="height: 100%">
+          <div>
+            <h1>程序结构图</h1>
+            <div class="demo-image__lazy">
+              <el-image  src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg"
+                         lazy
+                         :preview-src-list="srcList"
+              />
+            </div>
+          </div>
+        </div>
+      </el-carousel-item>
+
+      <el-carousel-item style="background: #FFFFFF">
+        <div id="page-five" style="height: 100%;overflow-y: scroll;">
+          <h1>分析过程/结果</h1>
+          <div>
+            <div class="markdown-body" v-html="firstContent" style="text-align: left"></div>
+          </div>
+        </div>
+      </el-carousel-item>
+
 
     </el-carousel>
   </div>
@@ -158,7 +181,18 @@ export default {
     const peStaticUrl = ref('');
     const loading = ref(true);
     const virusStatus=ref('success');
+    const pageSize = ref(5);
     const packVirusContent=ref();
+    const small = ref(false)
+    const background = ref(false)
+    const disabled = ref(false)
+    const srcList=ref(['https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'])
+    const handleSizeChange = (val) => {
+      console.log(`${val} items per page`)
+    }
+    const handleCurrentChange = (val) => {
+      console.log(`current page: ${val}`)
+    }
 
     //触发换页函数
 
@@ -241,6 +275,13 @@ export default {
       peStaticUrl,
       virusStatus,
       packVirusContent,
+      small,
+      background,
+      disabled,
+      handleSizeChange,
+      handleCurrentChange,
+      pageSize,
+      srcList,
     }
   }
 }

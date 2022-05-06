@@ -11,7 +11,7 @@
           <template #title>
             <span>{{category.title}}</span>
           </template>
-          <el-menu-item v-for="item in category.item" :index="item.route">{{item.name}}</el-menu-item>
+          <el-menu-item v-for="item in category.item" :index="item.route">{{item.name}}123</el-menu-item>
         </el-sub-menu>
       </el-menu>
 </template>
