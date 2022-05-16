@@ -11,7 +11,7 @@
           <template #title>
             <span>{{category.title}}</span>
           </template>
-          <el-menu-item v-for="item in category.item" :index="item.route">{{item.name}}123</el-menu-item>
+          <el-menu-item v-for="item in category.item" :index="item.route">{{item.name}}</el-menu-item>
         </el-sub-menu>
       </el-menu>
 </template>
@@ -35,9 +35,19 @@ export default {
             item:data.value.doc,
           },
           {
-            index:'example',
-            title:'样本',
-            item:data.value.example,
+            index:'lv1',
+            title:'初级样例',
+            item:data.value.lv1,
+          },
+          {
+            index:'lv2',
+            title:'中级样例',
+            item:data.value.lv2,
+          },
+          {
+            index:'lv3',
+            title:'高级样例',
+            item:data.value.lv3,
           }
         ])
       })

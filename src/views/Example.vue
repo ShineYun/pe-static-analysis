@@ -75,7 +75,7 @@
         <div id="page-three-left">
           <div id="page-three-left-top">
             <h1 style="margin: 5px !important;">壳检测分析</h1>
-            <el-descriptions :column="2" border >
+            <el-descriptions v-if="packInfo" :column="2" border >
               <el-descriptions-item
                   label="Entry Point"
                   label-align="right"
@@ -83,29 +83,28 @@
                   label-class-name="my-label"
                   class-name="my-content"
                   width="200px"
-              >kooriookami</el-descriptions-item
-              >
+              >{{ packInfo.entryPoint}} </el-descriptions-item>
               <el-descriptions-item label="EP Section" label-align="right" align="center"
-              >18100000000</el-descriptions-item
+              >{{ packInfo.epSection }}</el-descriptions-item
               >
               <el-descriptions-item label="File Offset" label-align="right" align="center"
-              >Suzhou</el-descriptions-item
+              >{{ packInfo.fileOffset }}</el-descriptions-item
               >
               <el-descriptions-item label="First Bytes" label-align="right" align="center">
-                school
+                {{ packInfo.firstBytes }}
               </el-descriptions-item>
               <el-descriptions-item label="Linker Info" label-align="right" align="center"
-              >链接器数据</el-descriptions-item>
+              >{{ packInfo.linkerInfo }}</el-descriptions-item>
               <el-descriptions-item label="SubSystem" label-align="right" align="center"
-              >链接器数据
+              >{{ packInfo.subSystem }}
               </el-descriptions-item>
               <el-descriptions-item label="File Size" label-align="right" align="center"
-              >文件大小</el-descriptions-item>
+              >{{ packInfo.fileSize }}</el-descriptions-item>
               <el-descriptions-item label="Overlay" label-align="right" align="center"
-              >链接器数据</el-descriptions-item>
+              >{{ packInfo.overlay }}</el-descriptions-item>
 
               <el-descriptions-item label="壳信息" label-align="right" align="center"
-              >无壳</el-descriptions-item>
+              >{{ packInfo.pack }}</el-descriptions-item>
             </el-descriptions>
           </div>
           <div id="page-three-left-down">
@@ -133,8 +132,7 @@
           <div>
             <h1>程序结构图</h1>
             <div class="demo-image__lazy">
-              <el-image  src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg"
-                         lazy
+              <el-image  :src="structOfPE"
                          :preview-src-list="srcList"
               />
             </div>
@@ -146,7 +144,7 @@
         <div id="page-five" style="height: 100%;overflow-y: scroll;">
           <h1>分析过程/结果</h1>
           <div>
-            <div class="markdown-body" v-html="firstContent" style="text-align: left"></div>
+            <div class="markdown-body" v-html="analyzeContent" style="text-align: left"></div>
           </div>
         </div>
       </el-carousel-item>
@@ -161,12 +159,7 @@
 import {getCurrentInstance, ref} from 'vue'
 
 export default {
-  data() {
-    return {
-      program_url:'http://www.baidu.com',
-      doc_url:'https://markdown-1306010242.cos.ap-chongqing.myqcloud.com/pe.md',
-    }
-  },
+
   setup() {
     const radio = ref('asm')
     const { proxy } = getCurrentInstance();
@@ -176,23 +169,24 @@ export default {
     const secondContent = ref();
     const asmContent = ref();
     const reverseAsmContent = ref();
+    const analyzeContent = ref();
     const data = ref();   //请求得到的json数据
     const loadedPage = [];
     const peStaticUrl = ref('');
     const loading = ref(true);
-    const virusStatus=ref('success');
+    const virusStatus=ref();
+    const packInfo = ref();
     const pageSize = ref(5);
     const packVirusContent=ref();
     const small = ref(false)
     const background = ref(false)
     const disabled = ref(false)
-    const srcList=ref(['https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'])
-    const handleSizeChange = (val) => {
-      console.log(`${val} items per page`)
-    }
-    const handleCurrentChange = (val) => {
-      console.log(`current page: ${val}`)
-    }
+    const structOfPE = ref();
+    const srcList=ref([])
+    const program_url=ref()
+    const doc_url=ref()
+    const resultContent=ref();
+
 
     //触发换页函数
 
@@ -208,8 +202,12 @@ export default {
         else if(newPage === 2){
           packVirusContent.value = await getMd(data.value.packVirusData);
         }
-        else{
-
+        else if(newPage === 3){
+          structOfPE.value = await data.value.structOfPE;
+          srcList.value.push(data.value.structOfPE);
+        }
+        else if(newPage === 4){
+          analyzeContent.value = await getMd(data.value.analyzeContent);
         }
         loadedPage.push(newPage);
       }
@@ -228,15 +226,21 @@ export default {
     function getExample(){
       proxy.eid = window.location.href.split('/example/')[1];
       proxy.$axios.get(`/api/getExample?eid=${proxy.eid}`).then(async res => {
-        data.value = res.data;
-        console.log(res.data);
+        data.value = await res.data;
+        program_url.value = await data.value.program_url;
+        doc_url.value  = await data.value.doc_url;
+        packInfo.value = await data.value.packInfo;
+        srcList.value.push(data.value.structOfPE);
+        console.log(data.value.structOfPE);
+        virusStatus.value = await data.value.virusStatus;
         imgList.value = data.value.introduction.imgList;
-        // console.log('doc_url:',data.doc_url);
         firstContent.value = await getMd(data.value.introduction.markdown);
-        peStaticUrl.value = data.value.peStaticUrl;
+        peStaticUrl.value = await data.value.peStaticUrl;
+        structOfPE.value = await data.value.structOfPE;
         //todo delete next line
         packVirusContent.value = await getMd(data.value.packVirusData);
         loading.value = false;
+
       })
 
     }
@@ -266,8 +270,8 @@ export default {
       secondContent,
       asmContent,
       reverseAsmContent,
+      analyzeContent,
       defaultProps,
-      // tableData1,
       onTableRowDblClick,
       switchPage,
       data,
@@ -278,10 +282,12 @@ export default {
       small,
       background,
       disabled,
-      handleSizeChange,
-      handleCurrentChange,
       pageSize,
+      structOfPE,
       srcList,
+      packInfo,
+      program_url,
+      doc_url,
     }
   }
 }

@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <div
+      v-loading="loading"
+      element-loading-text="Loading..."
+      style="height: 100%;"
+  >
     <div class="markdown-body" v-html="articalContent" style="text-align: left"></div>
   </div>
 </template>
@@ -13,7 +17,8 @@ export default {
   setup(){
     //proxy代理 类似this
     const { proxy } = getCurrentInstance();
-    const articalContent = ref()
+    const articalContent = ref();
+    const loading = ref(true);
     function getDoc(){
       const data = ref();
       proxy.did = window.location.href.split('/doc/')[1];
@@ -22,6 +27,7 @@ export default {
         data.value = res.data;
         console.log('doc_url:',data.value.doc_url);
         getMd(data.value.doc_url);
+        loading.value = false;
       })
     };
     //获取文档的写法
@@ -37,27 +43,10 @@ export default {
     getDoc();
     return {
       articalContent,
+      loading,
     };
   },
-  // created() {
-  //   let data;
-  //   let self = this;
-  //   this.did = window.location.href.split('/doc/')[1];
-  //   this.$axios.get(`/api/getDocument?did=${this.did}`).then(res => {
-  //     console.log(res.data);
-  //     data = res.data;
-  //     console.log('doc_url:',data.doc_url);
-  //     getMd(data.doc_url);
-  //   })
-  //   function getMd(doc_url){
-  //     self.$axios.get(doc_url).then(res => {
-  //       const htmlMD = self.$marked(res.data);
-  //       console.log(typeof res.data);
-  //       console.log(htmlMD);
-  //       self.articalContent = htmlMD;
-  //     });
-  //   }
-  // }
+
 };
 </script>
 
